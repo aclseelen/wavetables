@@ -1,44 +1,44 @@
 #include <math.h>
 #include "wavetables.h"
 
-void sawtooth(double wave_table[], int n_partials, int n_samples) {
+void sawtooth(double waveTable[], int nPartials, int nSamples) {
 
-    for (int i = 0; i < n_samples; i++) {
+    for (int i = 0; i < nSamples; i++) {
         double sample_value = 0;
-        for (int p = 1; p <= n_partials; p++) {
-            sample_value += sin(p * 2.0 * M_PI * i / n_samples) / p;
+        for (int p = 1; p <= nPartials; p++) {
+            sample_value += sin(p * 2.0 * M_PI * i / nSamples) / p;
         }
-        wave_table[i] = sample_value;
+        waveTable[i] = sample_value;
     }
 }
 
-void square(double wave_table[], int n_partials, int n_samples) {
+void square(double waveTable[], int nPartials, int nSamples) {
 
-    for (int i = 0; i < n_samples; i++) {
+    for (int i = 0; i < nSamples; i++) {
         double sample_value = 0;
-        for (int p = 1; p <= n_partials; p++) {
+        for (int p = 1; p <= nPartials; p++) {
             if (p % 2 == 0) {
                 sample_value += 0;
             } else {
-                sample_value += sin(p * 2.0 * M_PI * i / n_samples) / p;
+                sample_value += sin(p * 2.0 * M_PI * i / nSamples) / p;
             }
         }
-        wave_table[i] = sample_value;
+        waveTable[i] = sample_value;
     }
 }
 
-void triangle2(double wave_table[], int n_partials, int n_samples) {
+void triangle2(double waveTable[], int nPartials, int nSamples) {
 
-    for (int i = 0; i < n_samples; i++) {
+    for (int i = 0; i < nSamples; i++) {
         double sample_value = 0;
-        for (int p = 1; p <= n_partials; p++) {
+        for (int p = 1; p <= nPartials; p++) {
             if (p % 2 == 0) {
                 sample_value += 0;
             } else {
-                sample_value += sin(p * 2.0 * M_PI * i / n_samples) / p * p;
+                sample_value += sin(p * 2.0 * M_PI * i / nSamples) / p * p;
             }
         }
-        wave_table[i] = sample_value;
+        waveTable[i] = sample_value;
     }
 }
 
@@ -58,31 +58,77 @@ CartesianComplex pol2car(PolarComplex polar) {
     return cartesian;
 }
 
-void car2pol_array(CartesianComplex *cartesian_in, PolarComplex *polar_out, int length) {
+void car2PolArray(const CartesianComplex *carArr, PolarComplex *polArr, int length) {
 
     for (int i = 0; i < length; i++) {
-        polar_out[i] = car2pol(cartesian_in[i]);
+        polArr[i] = car2pol(carArr[i]);
     }
 }
 
-void pol2car_array(PolarComplex *polar_in, CartesianComplex *cartesian_out, int length) {
+void pol2CarArray(const PolarComplex *polarIn, CartesianComplex *cartesianOut, int length) {
 
     for (int i = 0; i < length; i++) {
-        cartesian_out[i] = pol2car(polar_in[i]);
+        cartesianOut[i] = pol2car(polarIn[i]);
     }
 }
 
-void dft(double *wave_table, CartesianComplex *cartesian_table, int N) {
+void dftCartesian(const double *waveTable, CartesianComplex *dftCar, int N) {
 
     for (int k = 0; k < N; k++) {
-        cartesian_table[k].real = 0;
-        cartesian_table[k].imag = 0;
+        dftCar[k].real = 0;
+        dftCar[k].imag = 0;
 
         for (int n = 0; n < N; n++) {
 
             double theta = (2 * M_PI * k * n) / N;
-            cartesian_table[k].real += wave_table[n] * cos(theta);
-            cartesian_table[k].imag -= wave_table[n] * sin(theta);
+            dftCar[k].real += waveTable[n] * cos(theta);
+            dftCar[k].imag -= waveTable[n] * sin(theta);
         }
+    }
+}
+
+void dftPolar(const double *waveTable, PolarComplex *dftPol, int N) {
+
+    for (int k = 0; k < N; k++) {
+
+        CartesianComplex cartesian;
+
+        cartesian.real = 0;
+        cartesian.imag = 0;
+
+        for (int n = 0; n < N; n++) {
+
+            double theta = (2 * M_PI * k * n) / N;
+            cartesian.real += waveTable[n] * cos(theta);
+            cartesian.imag -= waveTable[n] * sin(theta);
+        }
+        dftPol[k] = car2pol(cartesian);
+    }
+}
+
+void idftCartesian(const CartesianComplex *dftCar, double *waveTable, int N) {
+
+    for (int n = 0; n < N; n++) {
+        waveTable[n] = 0;
+
+        for (int k = 0; k < N; k++) {
+            double theta = (2 * M_PI * k * n) / N;
+            waveTable[n] += dftCar[k].real * cos(theta) + dftCar[k].imag * sin(theta);
+        }
+        waveTable[n] /= N;
+    }
+}
+
+void idftPolar(const PolarComplex *dftPol, double *waveTable, int N) {
+
+    for (int n = 0; n < N; n++) {
+        waveTable[n] = 0;
+
+        for (int k = 0; k < N; k++) {
+            double theta = (2 * M_PI * k * n) / N;
+            CartesianComplex cartesian = pol2car(dftPol[k]);
+            waveTable[n] += cartesian.real * cos(theta) + cartesian.imag * sin(theta);
+        }
+        waveTable[n] /= N;
     }
 }

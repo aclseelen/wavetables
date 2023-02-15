@@ -11,16 +11,21 @@ typedef struct {
     double angl;
 } PolarComplex;
 
-void car2pol_array(CartesianComplex *cartesian_in, PolarComplex *polar_out, int length);
-void pol2car_array(PolarComplex *polar_in, CartesianComplex *cartesian_out, int length);
+void car2PolArray(const CartesianComplex *carArr, PolarComplex *polArr, int length);
+void pol2CarArray(const PolarComplex *polarIn, CartesianComplex *cartesianOut, int length);
 
-void dft(double *wave_table, CartesianComplex *cartesian_table, int N);
+void dftCartesian(const double *waveTable, CartesianComplex *dftCar, int N);
+void dftPolar(const double *waveTable, PolarComplex *dftPol, int N);
+void idftCartesian(const CartesianComplex *dftCar, double *waveTable, int N);
+void idftPolar(const PolarComplex *dftPol, double *waveTable, int N);
 
-void sawtooth(double wave_table[], int n_partials, int n_samples);
-void square(double wave_table[], int n_partials, int n_samples);
-void triangle2(double wave_table[], int n_partials, int n_samples);
+void sawtooth(double *waveTable, int nPartials, int nSamples);
+void square(double *waveTable, int nPartials, int nSamples);
+void triangle2(double *waveTable, int nPartials, int nSamples);
 
-void write_to_text_file(double array[], int len, char *filename);
-void write_to_text_files(CartesianComplex array[], int len, char *filename_real, char *filename_imag);
+void writeToTextFile(const double *array, int len, char *filename);
+void writeCartesianToTextFiles(const CartesianComplex *carArr, int len, char *filenameReal, char *filenameImag);
+void writePolarToTextFiles(const PolarComplex *polArr, int len, char *filenameMagn, char *filenameAngl);
+
 
 #endif //WAVETABLES_WAVETABLES_H
