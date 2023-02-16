@@ -90,7 +90,7 @@ void dftCartesian(const double *waveTable, CartesianComplex *dftCar, int N) {
 
             double theta = (2 * M_PI * k * n) / N;
             dftCar[k].real += waveTable[n] * cos(theta);
-            dftCar[k].imag -= waveTable[n] * sin(theta);
+            dftCar[k].imag += waveTable[n] * sin(theta);
         }
     }
 }
@@ -108,7 +108,7 @@ void dftPolar(const double *waveTable, PolarComplex *dftPol, int N) {
 
             double theta = (2 * M_PI * k * n) / N;
             cartesian.real += waveTable[n] * cos(theta);
-            cartesian.imag -= waveTable[n] * sin(theta);
+            cartesian.imag += waveTable[n] * sin(theta);
         }
         dftPol[k] = car2pol(cartesian);
     }
