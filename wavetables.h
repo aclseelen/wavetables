@@ -19,6 +19,9 @@ void dftPolar(const double *waveTable, PolarComplex *dftPol, int N);
 void idftCartesian(const CartesianComplex *dftCar, double *waveTable, int N);
 void idftPolar(const PolarComplex *dftPol, double *waveTable, int N);
 
+void stripHarmonics(PolarComplex *dftPol, int nHarmonicsToKeep, int N);
+
+void sawtoothNonAliased(double *waveTable, int nSamples);
 void sawtooth(double *waveTable, int nPartials, int nSamples);
 void square(double *waveTable, int nPartials, int nSamples);
 void triangle2(double *waveTable, int nPartials, int nSamples);

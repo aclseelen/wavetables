@@ -32,13 +32,17 @@ int main(int argc, char *argv[]) {
 
     double *waveTable = malloc(sizeof(double) * nSamples);
 
-    if (strcmp(waveform, "sawtooth") == 0 || strcmp(waveform, "saw") == 0)
-        sawtooth(waveTable, nPartials, nSamples);
-    else if (strcmp(waveform, "square" ) == 0)
+    if (strcmp(waveform, "sawtooth") == 0 || strcmp(waveform, "saw") == 0) {
+        if (nPartials == 0) {
+            sawtoothNonAliased(waveTable, nSamples);
+        } else {
+            sawtooth(waveTable, nPartials, nSamples);
+        }
+    } else if (strcmp(waveform, "square") == 0) {
         square(waveTable, nPartials, nSamples);
-    else if (strcmp(waveform, "triangle2" ) == 0)
+    } else if (strcmp(waveform, "triangle2") == 0) {
         triangle2(waveTable, nPartials, nSamples);
-    else {
+    } else {
         printf("Waveform '%s' not recognized. Use 'sawtooth, 'square', or 'triangle2' instead", waveform);
         return 1;
     }
@@ -49,7 +53,7 @@ int main(int argc, char *argv[]) {
 
     writeToTextFile(waveTable, nSamples, outputFilename);
 
-    /** DFT analysis */
+    /** DFT analysis / decomposition */
 
     CartesianComplex *cartesianTable = malloc(sizeof(CartesianComplex) * nSamples);
     PolarComplex *polarTable = malloc(sizeof(PolarComplex) * nSamples);
@@ -59,6 +63,12 @@ int main(int argc, char *argv[]) {
 
     double *waveTableIdftCar = malloc(sizeof(double) * nSamples);
     double *waveTableIdftPol = malloc(sizeof(double) * nSamples);
+
+    /** edit DFT before recomposition */
+
+    stripHarmonics(polarTable, 20, nSamples);
+
+    /** IDFT synthesis */
 
     idftCartesian(cartesianTable, waveTableIdftCar, nSamples);
     idftPolar(polarTable, waveTableIdftPol, nSamples);
