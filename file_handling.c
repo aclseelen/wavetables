@@ -4,7 +4,12 @@
 
 void writeToTextFile(const double array[], int len, char *filename) {
 
-    FILE *f = fopen(filename, "w");
+    size_t char70size = sizeof(char) * 70;
+    char *outputFilename = malloc(char70size);
+    snprintf(outputFilename, char70size, "../output/txt/%s", filename);
+
+    FILE *f = fopen(outputFilename, "w");
+    free(outputFilename);
     if (f == NULL)
     {
         printf("Error opening file!\n");
@@ -20,14 +25,21 @@ void writeToTextFile(const double array[], int len, char *filename) {
 
 void writeCartesianToTextFiles(const CartesianComplex carArr[], int len, char *filenameReal, char *filenameImag) {
 
-    FILE *f_real = fopen(filenameReal, "w");
+    size_t char70size = sizeof(char) * 70;
+    char *outputFilename = malloc(char70size);
+    snprintf(outputFilename, char70size, "../output/txt/%s", filenameReal);
+
+    FILE *f_real = fopen(outputFilename, "w");
     if (f_real == NULL)
     {
         printf("Error opening file!\n");
         exit(1);
     }
 
-    FILE *f_imag = fopen(filenameImag, "w");
+    snprintf(outputFilename, char70size, "../output/txt/%s", filenameImag);
+
+    FILE *f_imag = fopen(outputFilename, "w");
+    free(outputFilename);
     if (f_imag == NULL)
     {
         printf("Error opening file!\n");
@@ -45,19 +57,27 @@ void writeCartesianToTextFiles(const CartesianComplex carArr[], int len, char *f
 
 void writePolarToTextFiles(const PolarComplex polArr[], int len, char *filenameMagn, char *filenameAngl) {
 
-    FILE *f_magn = fopen(filenameMagn, "w");
+    size_t char70size = sizeof(char) * 70;
+    char *outputFilename = malloc(char70size);
+    snprintf(outputFilename, char70size, "../output/txt/%s", filenameMagn);
+
+    FILE *f_magn = fopen(outputFilename, "w");
     if (f_magn == NULL)
     {
         printf("Error opening file!\n");
         exit(1);
     }
 
-    FILE *f_angl = fopen(filenameAngl, "w");
+    snprintf(outputFilename, char70size, "../output/txt/%s", filenameAngl);
+
+    FILE *f_angl = fopen(outputFilename, "w");
     if (f_angl == NULL)
     {
         printf("Error opening file!\n");
         exit(1);
     }
+
+    free(outputFilename);
 
     for (int i = 0; i < len; i++) {
         fprintf(f_magn, "%.20f\n", polArr[i].magn);
@@ -66,4 +86,24 @@ void writePolarToTextFiles(const PolarComplex polArr[], int len, char *filenameM
 
     fclose(f_magn);
     fclose(f_angl);
+}
+
+void writePolarToPlotFile(const PolarComplex polArr[], int len) {
+    FILE *gnuplot = popen("gnuplot", "w");
+    if (!gnuplot) {
+        perror("popen");
+        exit(EXIT_FAILURE);
+    }
+
+    fprintf(gnuplot, "gnuplot gnuplotscript.plt\n");
+    for (int i = 0; i < len; ++i) {
+        fprintf(gnuplot, "%.20f \"%.20f\n", polArr[i].magn, polArr[i].angl);
+    }
+    fprintf(gnuplot, "e\n");
+    fprintf(stdout, "Click Ctrl+d to quit...\n");
+    fflush(gnuplot);
+    getchar();
+
+    pclose(gnuplot);
+    exit(EXIT_SUCCESS);
 }

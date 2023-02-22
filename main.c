@@ -11,9 +11,11 @@ int main(int argc, char *argv[]) {
     int nSamples = 512;
 
     char *waveform = malloc(16 * sizeof(char));
+    char *outputFolder = malloc(16 * sizeof(char));
 
+    int generateOrInput = 0;
     int opt;
-    while ((opt = getopt(argc, argv, "p:s:w:")) != -1) {
+    while ((opt = getopt(argc, argv, "p:s:w:o")) != -1) {
         switch (opt) {
             case 'p':
                 nPartials = atoi(optarg);
@@ -22,30 +24,34 @@ int main(int argc, char *argv[]) {
                 nSamples = atoi(optarg);
                 break;
             case 'w':
+                if (generateOrInput != 0) {
+                    break;
+                }
                 strcpy(waveform, optarg);
+                generateOrInput = 1;
+                break;
+            case 'e':
+                if (generateOrInput != 0) {
+                    break;
+                }
+                strcpy(waveform, optarg);
+                generateOrInput = 2;
+                break;
+            case 'o':
+                strcpy(outputFolder, optarg);
                 break;
             default:
         }
     }
-
     /** create wave table*/
 
     double *waveTable = malloc(sizeof(double) * nSamples);
 
-    if (strcmp(waveform, "sawtooth") == 0 || strcmp(waveform, "saw") == 0) {
-        if (nPartials == 0) {
-            sawtoothNonAliased(waveTable, nSamples);
-        } else {
-            sawtooth(waveTable, nPartials, nSamples);
-        }
-    } else if (strcmp(waveform, "square") == 0) {
-        square(waveTable, nPartials, nSamples);
-    } else if (strcmp(waveform, "triangle2") == 0) {
-        triangle2(waveTable, nPartials, nSamples);
-    } else {
-        printf("Waveform '%s' not recognized. Use 'sawtooth, 'square', or 'triangle2' instead", waveform);
+    int waveformSuccess = getWaveform(waveform, waveTable, nSamples, nPartials);
+    if (waveformSuccess != 0) {
         return 1;
     }
+
 
     size_t char64size = sizeof(char) * 64;
     char *outputFilename = malloc(char64size);
@@ -66,7 +72,7 @@ int main(int argc, char *argv[]) {
 
     /** edit DFT before recomposition */
 
-    stripHarmonics(polarTable, 20, nSamples);
+//    stripHarmonics(polarTable, 20, nSamples);
 
     /** IDFT synthesis */
 
@@ -92,9 +98,12 @@ int main(int argc, char *argv[]) {
     writeToTextFile(waveTableIdftCar, nSamples, filenameIdftCar);
     writeToTextFile(waveTableIdftPol, nSamples, filenameIdftPol);
 
+//    writePolarToPlotFile(waveTableIdftPol, nSamples);
+
     /** free memory */
 
     free(outputFilename);
+    free(outputFolder);
     free(waveform);
     free(waveTable);
     free(cartesianTable);

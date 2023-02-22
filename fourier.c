@@ -1,55 +1,6 @@
 #include <math.h>
 #include "wavetables.h"
 
-void sawtooth(double *waveTable, int nPartials, int nSamples) {
-
-    for (int i = 0; i < nSamples; i++) {
-        double sample_value = 0;
-        for (int p = 1; p <= nPartials; p++) {
-            sample_value += sin(p * 2.0 * M_PI * i / nSamples) / p;
-        }
-        waveTable[i] = sample_value;
-    }
-}
-
-void sawtoothNonAliased(double *waveTable, int nSamples) {
-
-    for (int i = 0; i < nSamples; i++) {
-        int nSamplesMinusOne = nSamples - 1; // to really go from 1 to -1
-        waveTable[i] = ((nSamplesMinusOne - i) / (0.5 * nSamplesMinusOne)) - 1;
-    }
-}
-
-void square(double *waveTable, int nPartials, int nSamples) {
-
-    for (int i = 0; i < nSamples; i++) {
-        double sample_value = 0;
-        for (int p = 1; p <= nPartials; p++) {
-            if (p % 2 == 0) {
-                sample_value += 0;
-            } else {
-                sample_value += sin(p * 2.0 * M_PI * i / nSamples) / p;
-            }
-        }
-        waveTable[i] = sample_value;
-    }
-}
-
-void triangle2(double *waveTable, int nPartials, int nSamples) {
-
-    for (int i = 0; i < nSamples; i++) {
-        double sample_value = 0;
-        for (int p = 1; p <= nPartials; p++) {
-            if (p % 2 == 0) {
-                sample_value += 0;
-            } else {
-                sample_value += sin(p * 2.0 * M_PI * i / nSamples) / p * p;
-            }
-        }
-        waveTable[i] = sample_value;
-    }
-}
-
 PolarComplex car2pol(CartesianComplex cartesian) {
 
     PolarComplex polar;
@@ -138,26 +89,5 @@ void idftPolar(const PolarComplex *dftPol, double *waveTable, int N) {
             waveTable[n] += cartesian.real * cos(theta) + cartesian.imag * sin(theta);
         }
         waveTable[n] /= N;
-    }
-}
-
-void stripHarmonics(PolarComplex *dftPol, int nHarmonicsToKeep, int N) {
-
-    int halfN = N / 2;
-    for (int i = nHarmonicsToKeep; i <= halfN; i++) {
-
-        // example: N=32 keeping 10 harmonics
-        // sample[0] is frequency zero, so ignore. Starting at index 1...
-        // From the other side, starting straight from index N-1
-        // So there is always one sample in the middle left that should be included
-        // Therefore, i <= halfN, so add the "equals"
-        // run through indices
-        // [11, 12, 13, 14, 15] + [16]
-        // [21, 20, 19, 18, 17] + [16]
-
-        dftPol[i+1].magn = 0;
-        dftPol[i+1].angl = 0;
-        dftPol[N-1-i].magn = 0;
-        dftPol[N-1-i].angl = 0;
     }
 }
