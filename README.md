@@ -25,22 +25,22 @@ aliasing.
 
 Intended use, somewhat like:
 
-`$ ./wavetables -w sawtooth -p 20 -n 1024`
+`$ ./wavetables -w sawtooth -p 20 -s 1024`
 
 to generate a sawtooth with 20 partials in 1024 samples, or:
 
-`$ ./wavetables -e my-wave-table.txt -n 1024`
+`$ ./wavetables -e my-wave-table.txt -s 1024`
 
 to show your own wave table and create analysis files
 (by default only polar: magnitude and angle (phase))
 
-`$ ./wavetables -e my-wave-table.txt -n 1024 -p 40`
+`$ ./wavetables -e my-wave-table.txt -s 1024 -p 40`
 
 to load your own wave table of 1024 samples (as a text file)
 and strip all partials except the first 40.
 
 `-e` external file
-`-n` number of samples
+`-s` number of samples
 `-p` number of partials
 `-w` waveform
 
