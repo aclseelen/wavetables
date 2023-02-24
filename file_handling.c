@@ -10,9 +10,8 @@ void writeToTextFile(const double array[], int len, char *filename) {
 
     FILE *f = fopen(outputFilename, "w");
     free(outputFilename);
-    if (f == NULL)
-    {
-        printf("Error opening file!\n");
+    if (f == NULL) {
+        printf("Error opening file (writeToTextFile())!\n");
         exit(1);
     }
 
@@ -30,9 +29,8 @@ void writeCartesianToTextFiles(const CartesianComplex carArr[], int len, char *f
     snprintf(outputFilename, char70size, "../output/txt/%s", filenameReal);
 
     FILE *f_real = fopen(outputFilename, "w");
-    if (f_real == NULL)
-    {
-        printf("Error opening file!\n");
+    if (f_real == NULL) {
+        printf("Error opening file (writeCartesianToTextFiles())!\n");
         exit(1);
     }
 
@@ -40,9 +38,8 @@ void writeCartesianToTextFiles(const CartesianComplex carArr[], int len, char *f
 
     FILE *f_imag = fopen(outputFilename, "w");
     free(outputFilename);
-    if (f_imag == NULL)
-    {
-        printf("Error opening file!\n");
+    if (f_imag == NULL) {
+        printf("Error opening file (writeCartesianToTextFiles())!\n");
         exit(1);
     }
 
@@ -62,18 +59,16 @@ void writePolarToTextFiles(const PolarComplex polArr[], int len, char *filenameM
     snprintf(outputFilename, char70size, "../output/txt/%s", filenameMagn);
 
     FILE *f_magn = fopen(outputFilename, "w");
-    if (f_magn == NULL)
-    {
-        printf("Error opening file!\n");
+    if (f_magn == NULL) {
+        printf("Error opening file (writePolarToTextFiles())!\n");
         exit(1);
     }
 
     snprintf(outputFilename, char70size, "../output/txt/%s", filenameAngl);
 
     FILE *f_angl = fopen(outputFilename, "w");
-    if (f_angl == NULL)
-    {
-        printf("Error opening file!\n");
+    if (f_angl == NULL) {
+        printf("Error opening file (writePolarToTextFiles())!\n");
         exit(1);
     }
 
@@ -106,4 +101,22 @@ void writePolarToPlotFile(const PolarComplex polArr[], int len) {
 
     pclose(gnuplot);
     exit(EXIT_SUCCESS);
+}
+
+void readFrom(const char *inputFilename, double *waveTable, const int nSamples, const int maxLineLength) {
+
+    FILE *f = fopen(inputFilename, "r");
+    if (f == NULL) {
+        printf("Error opening file (readFrom())!\n");
+        exit(1);
+    }
+
+    char line[maxLineLength];
+    unsigned int index = 0;
+    while (fgets(line, maxLineLength, f) != NULL && index < nSamples) {
+        waveTable[index] = strtod(line, NULL);
+        index++;
+    }
+
+    fclose(f);
 }

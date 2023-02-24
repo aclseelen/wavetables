@@ -2,40 +2,45 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <libgen.h>
 #include "wavetables.h"
 
 int main(int argc, char *argv[]) {
 
+    const size_t CHAR_64_SIZE = sizeof(char) * 64;
+    int generateOrLoad = 0;
+
     int nPartials = 32;
     int nSamples = 512;
 
-    char *waveform = malloc(16 * sizeof(char));
-    char *outputFolder = malloc(16 * sizeof(char));
+    char *waveformName = malloc(CHAR_64_SIZE);
+    char *outputFolder = malloc(CHAR_64_SIZE);
 
-    int generateOrInput = 0;
+    char *outputFilename = malloc(CHAR_64_SIZE);
+    char *inputFilename = malloc(CHAR_64_SIZE);
+
     int opt;
-    while ((opt = getopt(argc, argv, "p:s:w:o")) != -1) {
+    while ((opt = getopt(argc, argv, "p:s:w:o:e:")) != -1) {
         switch (opt) {
             case 'p':
-                nPartials = atoi(optarg);
+                nPartials = strtol(optarg, NULL, 10);
                 break;
             case 's':
-                nSamples = atoi(optarg);
+                nSamples = strtol(optarg, NULL, 10);
                 break;
             case 'w':
-                if (generateOrInput != 0) {
+                if (generateOrLoad != 0) {
                     break;
                 }
-                strcpy(waveform, optarg);
-                generateOrInput = 1;
+                strcpy(waveformName, optarg);
+                generateOrLoad = 1;
                 break;
             case 'e':
-                if (generateOrInput != 0) {
+                if (generateOrLoad != 0) {
                     break;
                 }
-                strcpy(waveform, optarg);
-                generateOrInput = 2;
+                strcpy(inputFilename, optarg);
+                generateOrLoad = 2;
                 break;
             case 'o':
                 strcpy(outputFolder, optarg);
@@ -43,21 +48,38 @@ int main(int argc, char *argv[]) {
             default:
         }
     }
-    /** create wave table*/
 
     double *waveTable = malloc(sizeof(double) * nSamples);
 
-    int waveformSuccess = getWaveform(waveform, waveTable, nSamples, nPartials);
-    if (waveformSuccess != 0) {
-        return 1;
+    switch (generateOrLoad) {
+
+        case 0:
+            printf("Nothing to do here... Please choose either option '-w' or '-e' next time.");
+            return 0;
+        case 1:
+            // create wave table
+            if (generateWaveTable(waveformName, waveTable, nSamples, nPartials) != 0) {
+                return 1;
+            }
+            snprintf(outputFilename, CHAR_64_SIZE, "%s-%d-%d.txt", waveformName, nPartials, nSamples);
+            writeToTextFile(waveTable, nSamples, outputFilename);
+            break;
+        case 2:
+            // load wave table
+            if (loadWaveTable(inputFilename, waveTable, nSamples) != 0) {
+                return 1;
+            }
+            strcpy(waveformName, basename(inputFilename));
+            free(inputFilename);
+            break;
+        default:
+            printf("Exiting..");
+            return 1;
     }
 
-
-    size_t char64size = sizeof(char) * 64;
-    char *outputFilename = malloc(char64size);
-    snprintf(outputFilename, char64size, "%s-%d-%d.txt", waveform, nPartials, nSamples);
-
+    snprintf(outputFilename, CHAR_64_SIZE, "%s-%d-%d.txt", waveformName, nPartials, nSamples);
     writeToTextFile(waveTable, nSamples, outputFilename);
+
 
     /** DFT analysis / decomposition */
 
@@ -72,39 +94,39 @@ int main(int argc, char *argv[]) {
 
     /** edit DFT before recomposition */
 
-//    stripHarmonics(polarTable, 20, nSamples);
+    if (generateOrLoad == 2 && nPartials > 0) {
+        stripHarmonics(polarTable, nPartials, nSamples);
+    }
 
     /** IDFT synthesis */
 
     idftCartesian(cartesianTable, waveTableIdftCar, nSamples);
     idftPolar(polarTable, waveTableIdftPol, nSamples);
 
-    char *filenameReal = malloc(char64size);
-    char *filenameImag = malloc(char64size);
-    char *filenameMagn = malloc(char64size);
-    char *filenameAngl = malloc(char64size);
-    char *filenameIdftCar = malloc(char64size);
-    char *filenameIdftPol = malloc(char64size);
+    char *filenameReal = malloc(CHAR_64_SIZE);
+    char *filenameImag = malloc(CHAR_64_SIZE);
+    char *filenameMagn = malloc(CHAR_64_SIZE);
+    char *filenameAngl = malloc(CHAR_64_SIZE);
+    char *filenameIdftCar = malloc(CHAR_64_SIZE);
+    char *filenameIdftPol = malloc(CHAR_64_SIZE);
 
-    snprintf(filenameReal, char64size, "%s-%d-%d-dft-real.txt", waveform, nPartials, nSamples);
-    snprintf(filenameImag, char64size, "%s-%d-%d-dft-imag.txt", waveform, nPartials, nSamples);
-    snprintf(filenameMagn, char64size, "%s-%d-%d-dft-magn.txt", waveform, nPartials, nSamples);
-    snprintf(filenameAngl, char64size, "%s-%d-%d-dft-angl.txt", waveform, nPartials, nSamples);
-    snprintf(filenameIdftCar, char64size, "%s-%d-%d-idft-car.txt", waveform, nPartials, nSamples);
-    snprintf(filenameIdftPol, char64size, "%s-%d-%d-idft-pol.txt", waveform, nPartials, nSamples);
+    snprintf(filenameReal, CHAR_64_SIZE, "%s-%d-%d-dft-real.txt", waveformName, nPartials, nSamples);
+    snprintf(filenameImag, CHAR_64_SIZE, "%s-%d-%d-dft-imag.txt", waveformName, nPartials, nSamples);
+    snprintf(filenameMagn, CHAR_64_SIZE, "%s-%d-%d-dft-magn.txt", waveformName, nPartials, nSamples);
+    snprintf(filenameAngl, CHAR_64_SIZE, "%s-%d-%d-dft-angl.txt", waveformName, nPartials, nSamples);
+    snprintf(filenameIdftCar, CHAR_64_SIZE, "%s-%d-%d-idft-car.txt", waveformName, nPartials, nSamples);
+    snprintf(filenameIdftPol, CHAR_64_SIZE, "%s-%d-%d-idft-pol.txt", waveformName, nPartials, nSamples);
 
     writeCartesianToTextFiles(cartesianTable, nSamples, filenameReal, filenameImag);
     writePolarToTextFiles(polarTable, nSamples, filenameMagn, filenameAngl);
     writeToTextFile(waveTableIdftCar, nSamples, filenameIdftCar);
     writeToTextFile(waveTableIdftPol, nSamples, filenameIdftPol);
 
-//    writePolarToPlotFile(waveTableIdftPol, nSamples);
-
     /** free memory */
 
     free(outputFilename);
     free(outputFolder);
-    free(waveform);
+    free(waveformName);
     free(waveTable);
     free(cartesianTable);
 
