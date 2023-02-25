@@ -2,14 +2,9 @@
 #include <stdlib.h>
 #include "wavetables.h"
 
-void writeToTextFile(const double array[], int len, char *filename) {
+void writeToTextFile(const double array[], int len, const char *filename) {
 
-    size_t char70size = sizeof(char) * 70;
-    char *outputFilename = malloc(char70size);
-    snprintf(outputFilename, char70size, "../output/txt/%s", filename);
-
-    FILE *f = fopen(outputFilename, "w");
-    free(outputFilename);
+    FILE *f = fopen(filename, "w");
     if (f == NULL) {
         printf("Error opening file (writeToTextFile())!\n");
         exit(1);
@@ -22,22 +17,16 @@ void writeToTextFile(const double array[], int len, char *filename) {
     fclose(f);
 }
 
-void writeCartesianToTextFiles(const CartesianComplex carArr[], int len, char *filenameReal, char *filenameImag) {
+void writeCartesianToTextFiles(const CartesianComplex carArr[], int len, const char *filenameReal,
+                               const char *filenameImag) {
 
-    size_t char70size = sizeof(char) * 70;
-    char *outputFilename = malloc(char70size);
-    snprintf(outputFilename, char70size, "../output/txt/%s", filenameReal);
-
-    FILE *f_real = fopen(outputFilename, "w");
+    FILE *f_real = fopen(filenameReal, "w");
     if (f_real == NULL) {
         printf("Error opening file (writeCartesianToTextFiles())!\n");
         exit(1);
     }
 
-    snprintf(outputFilename, char70size, "../output/txt/%s", filenameImag);
-
-    FILE *f_imag = fopen(outputFilename, "w");
-    free(outputFilename);
+    FILE *f_imag = fopen(filenameImag, "w");
     if (f_imag == NULL) {
         printf("Error opening file (writeCartesianToTextFiles())!\n");
         exit(1);
@@ -52,27 +41,19 @@ void writeCartesianToTextFiles(const CartesianComplex carArr[], int len, char *f
     fclose(f_imag);
 }
 
-void writePolarToTextFiles(const PolarComplex polArr[], int len, char *filenameMagn, char *filenameAngl) {
+void writePolarToTextFiles(const PolarComplex polArr[], int len, const char *filenameMagn, const char *filenameAngl) {
 
-    size_t char70size = sizeof(char) * 70;
-    char *outputFilename = malloc(char70size);
-    snprintf(outputFilename, char70size, "../output/txt/%s", filenameMagn);
-
-    FILE *f_magn = fopen(outputFilename, "w");
+    FILE *f_magn = fopen(filenameMagn, "w");
     if (f_magn == NULL) {
         printf("Error opening file (writePolarToTextFiles())!\n");
         exit(1);
     }
 
-    snprintf(outputFilename, char70size, "../output/txt/%s", filenameAngl);
-
-    FILE *f_angl = fopen(outputFilename, "w");
+    FILE *f_angl = fopen(filenameAngl, "w");
     if (f_angl == NULL) {
         printf("Error opening file (writePolarToTextFiles())!\n");
         exit(1);
     }
-
-    free(outputFilename);
 
     for (int i = 0; i < len; i++) {
         fprintf(f_magn, "%.20f\n", polArr[i].magn);

@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
             if (generateWaveTable(waveformName, waveTable, nSamples, nPartials) != 0) {
                 return 1;
             }
-            snprintf(outputFilename, CHAR_64_SIZE, "%s-%d-%d.txt", waveformName, nPartials, nSamples);
+            snprintf(outputFilename, CHAR_64_SIZE, "%s%s-%d-%d.txt", outputFolder, waveformName, nPartials, nSamples);
             writeToTextFile(waveTable, nSamples, outputFilename);
             break;
         case 2:
@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
             return 1;
     }
 
-    snprintf(outputFilename, CHAR_64_SIZE, "%s-%d-%d.txt", waveformName, nPartials, nSamples);
+    snprintf(outputFilename, CHAR_64_SIZE, "%s%s-%d-%d.txt", outputFolder, waveformName, nPartials, nSamples);
     writeToTextFile(waveTable, nSamples, outputFilename);
 
 
@@ -110,12 +110,12 @@ int main(int argc, char *argv[]) {
     char *filenameIdftCar = malloc(CHAR_64_SIZE);
     char *filenameIdftPol = malloc(CHAR_64_SIZE);
 
-    snprintf(filenameReal, CHAR_64_SIZE, "%s-%d-%d-dft-real.txt", waveformName, nPartials, nSamples);
-    snprintf(filenameImag, CHAR_64_SIZE, "%s-%d-%d-dft-imag.txt", waveformName, nPartials, nSamples);
-    snprintf(filenameMagn, CHAR_64_SIZE, "%s-%d-%d-dft-magn.txt", waveformName, nPartials, nSamples);
-    snprintf(filenameAngl, CHAR_64_SIZE, "%s-%d-%d-dft-angl.txt", waveformName, nPartials, nSamples);
-    snprintf(filenameIdftCar, CHAR_64_SIZE, "%s-%d-%d-idft-car.txt", waveformName, nPartials, nSamples);
-    snprintf(filenameIdftPol, CHAR_64_SIZE, "%s-%d-%d-idft-pol.txt", waveformName, nPartials, nSamples);
+    snprintf(filenameReal, CHAR_64_SIZE, "%s%s-%d-%d-dft-real.txt", outputFolder, waveformName, nPartials, nSamples);
+    snprintf(filenameImag, CHAR_64_SIZE, "%s%s-%d-%d-dft-imag.txt", outputFolder, waveformName, nPartials, nSamples);
+    snprintf(filenameMagn, CHAR_64_SIZE, "%s%s-%d-%d-dft-magn.txt", outputFolder, waveformName, nPartials, nSamples);
+    snprintf(filenameAngl, CHAR_64_SIZE, "%s%s-%d-%d-dft-angl.txt", outputFolder, waveformName, nPartials, nSamples);
+    snprintf(filenameIdftCar, CHAR_64_SIZE, "%s%s-%d-%d-idft-car.txt", outputFolder, waveformName, nPartials, nSamples);
+    snprintf(filenameIdftPol, CHAR_64_SIZE, "%s%s-%d-%d-idft-pol.txt", outputFolder, waveformName, nPartials, nSamples);
 
     writeCartesianToTextFiles(cartesianTable, nSamples, filenameReal, filenameImag);
     writePolarToTextFiles(polarTable, nSamples, filenameMagn, filenameAngl);

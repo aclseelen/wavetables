@@ -36,9 +36,9 @@ void triangle(double *waveTable, int nPartials, int nSamples);
 void triangle2(double *waveTable, int nPartials, int nSamples);
 
 /* file handling */
-void writeToTextFile(const double *array, int len, char *filename);
-void writeCartesianToTextFiles(const CartesianComplex *carArr, int len, char *filenameReal, char *filenameImag);
-void writePolarToTextFiles(const PolarComplex *polArr, int len, char *filenameMagn, char *filenameAngl);
+void writeToTextFile(const double *array, int len, const char *filename);
+void writeCartesianToTextFiles(const CartesianComplex *carArr, int len, const char *filenameReal, const char *filenameImag);
+void writePolarToTextFiles(const PolarComplex *polArr, int len, const char *filenameMagn, const char *filenameAngl);
 void writePolarToPlotFile(const PolarComplex *polArr, int len);
 void readFrom(const char *inputFilename, double *waveTable, const int nSamples, const int maxLineLength);
 
