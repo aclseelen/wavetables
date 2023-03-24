@@ -31,6 +31,21 @@ void sawtoothNonAliased(double *waveTable, int nSamples) {
     }
 }
 
+void muteFourth(double *waveTable, int nPartials, int nSamples) {
+
+    for (int i = 0; i < nSamples; i++) {
+        double sample_value = 0;
+        for (int p = 1; p <= nPartials; p++) {
+            if (p % 4 == 0) {
+                sample_value += 0;
+            } else {
+                sample_value += sin(p * 2.0 * M_PI * i / nSamples) / p;
+            }
+        }
+        waveTable[i] = sample_value;
+    }
+}
+
 void pulse(double *waveTable, int nPartials, int nSamples) {
 
     for (int i = 0; i < nSamples; i++) {

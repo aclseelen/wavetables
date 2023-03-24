@@ -14,12 +14,14 @@ int generateWaveTable(char *waveformName, double *waveTable, int nSamples, int n
         square(waveTable, nPartials, nSamples);
     } else if (strcmp(waveformName, "pulse") == 0) {
         pulse(waveTable, nPartials, nSamples);
-    } else if (strcmp(waveformName, "sawLowPass") == 0) {
+    } else if (strcmp(waveformName, "sawLowPass") == 0 || strcmp(waveformName, "saw-lp") == 0) {
         sawtoothLowPass(waveTable, nPartials, nSamples);
     } else if (strcmp(waveformName, "triangle") == 0) {
         triangle(waveTable, nPartials, nSamples);
     } else if (strcmp(waveformName, "triangle2") == 0) {
         triangle2(waveTable, nPartials, nSamples);
+    } else if (strcmp(waveformName, "mute4") == 0 || strcmp(waveformName, "stair4") == 0) {
+        muteFourth(waveTable, nPartials, nSamples);
     } else {
         printf("Waveform '%s' not recognized. Use 'sawtooth, 'square', or 'triangle2' instead", waveformName);
         return 1;
