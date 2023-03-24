@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(wavetables C)
+project(wavetables VERSION 0.1.0 DESCRIPTION "Generates, analyzes, and edits wave tables" LANGUAGES C)
 
 set(CMAKE_C_STANDARD 23)
 
