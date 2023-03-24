@@ -21,6 +21,62 @@ aliasing.
 
 ---
 
+## Build & Install
+
+The project uses the `CMake` build system for multiple
+platform usage. Your IDE might recognize it and configure and build
+automatically. You can then install the binary called `wavetables`
+wherever your OS and you like it best.
+
+### Windows and Mac
+
+You're on your own there, unfortunately. I'm not familiar with
+command line applications on Windows nor Mac.
+
+I did however choose
+`CMake` as build system in order to make it multi-platform. Any
+information is appreciated, so I can publish it here and help other
+users.
+
+### Linux 
+
+I'm new to `CMake` and the reason for not using `Makefile` is because
+of users of other platforms. From here, I did not figure out exactly
+how to create a simple install method Linux users are used to, like
+`make clean && make install`, since `cmake` generates a dependent
+`Makefile` in the (excluded) `build` directory, instead of in the
+project's main directory.
+
+So, for Linux users I wrote a simple build and install script, which
+requires `cmake` (minimum version `3.22`) to be available as
+command line application. It should be run as superuser in order
+to install it in `/usr/local/bin/`.
+
+First, navigate to the project main directory (where you found this
+README.md), for example:
+
+`$ cd ~/src/wavetables/`
+
+Then run the script as follows:
+
+`$ sudo ./scripts/linux_build_install_script.sh`
+
+If for some reason the script is not executable, alter permissions
+first, like for example:
+
+`$ chmod 755 ./scripts/linux_build_install_script.sh`
+
+#### Uninstall | Delete
+
+Check whether and/or where `wavetables` was installed 
+
+To remove it just delete the file `wavetables` where it was installed,
+most likely `/usr/local/bin/`. Nothing else was installed.
+
+`$ sudo rm -i /usr/local/bin/wavetables`
+
+---
+
 ## Usage
 
 ### Options

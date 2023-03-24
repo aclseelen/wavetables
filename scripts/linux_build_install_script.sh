@@ -10,5 +10,5 @@ cd build || exit
 cmake ..
 cmake --build .
 
-cp wavetables /usr/bin/
+cp wavetables /usr/local/bin/
 
