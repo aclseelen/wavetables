@@ -85,6 +85,7 @@ most likely `/usr/local/bin/`. Nothing else was installed.
 `-s` number of samples  
 `-p` number of partials  
 `-w` waveform
+`-f` file output (reduction)
 
 ### Examples
 
@@ -101,6 +102,17 @@ To load your own wave table of 1024 samples (as a text file)
 and strip all partials except the first 40:
 
 `$ ./wavetables -e my-wave-table.txt -s 1024 -p 40`
+
+### `-f`
+
+By default (`-f 15`) all output files are generated. To select only
+certain output files, sum their numbers and use that value with the
+`-f` option. The others will then be suppressed.
+
+* `8` &rarr; Cartesian DFT files (real & imaginary)
+* `4` &rarr; Polar DFT files (magnitude & angle)
+* `2` &rarr; Cartesian IDFT file
+* `1` &rarr; Polar IDFT file
 
 ---
 

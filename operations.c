@@ -1,3 +1,4 @@
+#include <math.h>
 #include "wavetables.h"
 
 void stripHarmonics(PolarComplex *dftPol, int nHarmonicsToKeep, int N) {
@@ -18,5 +19,19 @@ void stripHarmonics(PolarComplex *dftPol, int nHarmonicsToKeep, int N) {
         dftPol[i + 1].angl = 0;
         dftPol[N - 1 - i].magn = 0;
         dftPol[N - 1 - i].angl = 0;
+    }
+}
+
+void fillPolarTable(PolarComplex *polarTable, const double *spectralTable, int N) {
+    polarTable[0].magn = 0;
+    polarTable[0].angl = 0;
+
+    for (int i = 0; i < N / 2; i++) {
+        polarTable[i + 1].magn = spectralTable[i];
+        polarTable[N - 1 - i].magn = spectralTable[i];
+
+        // no phase information available, creating standard phase information
+        polarTable[i + 1].angl = 0.5 * M_PI;
+        polarTable[N - 1 - i].angl = -0.5 * M_PI;
     }
 }

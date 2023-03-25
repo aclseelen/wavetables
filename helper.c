@@ -29,8 +29,8 @@ int generateWaveTable(char *waveformName, double *waveTable, int nSamples, int n
     return 0;
 }
 
-int loadWaveTable(char *inputFilename, double *waveTable, int nSamples) {
+int loadTable(char *inputFilename, double *table, int nSamples) {
 
-    readFrom(inputFilename, waveTable, nSamples, 32);
+    readFrom(inputFilename, table, nSamples, 32);
     return 0;
 }

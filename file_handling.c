@@ -84,7 +84,7 @@ void writePolarToPlotFile(const PolarComplex polArr[], int len) {
     exit(EXIT_SUCCESS);
 }
 
-void readFrom(const char *inputFilename, double *waveTable, const int nSamples, const int maxLineLength) {
+void readFrom(const char *inputFilename, double *table, const int nSamples, const int maxLineLength) {
 
     FILE *f = fopen(inputFilename, "r");
     if (f == NULL) {
@@ -95,7 +95,7 @@ void readFrom(const char *inputFilename, double *waveTable, const int nSamples, 
     char line[maxLineLength];
     unsigned int index = 0;
     while (fgets(line, maxLineLength, f) != NULL && index < nSamples) {
-        waveTable[index] = strtod(line, NULL);
+        table[index] = strtod(line, NULL);
         index++;
     }
 

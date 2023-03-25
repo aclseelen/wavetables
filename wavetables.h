@@ -27,10 +27,12 @@ void idftPolar(const PolarComplex *dftPol, double *waveTable, int N);
 /* operations */
 void stripHarmonics(PolarComplex *dftPol, int nHarmonicsToKeep, int N);
 
+void fillPolarTable(PolarComplex *polarTable, const double *spectralTable, int N);
+
 /* helper */
 int generateWaveTable(char *waveformName, double *waveTable, int nSamples, int nPartials);
 
-int loadWaveTable(char *inputFilename, double *waveTable, int nSamples);
+int loadTable(char *inputFilename, double *table, int nSamples);
 
 /* waveforms */
 void sawtoothNonAliased(double *waveTable, int nSamples);
@@ -59,6 +61,6 @@ void writePolarToTextFiles(const PolarComplex *polArr, int len, const char *file
 
 void writePolarToPlotFile(const PolarComplex *polArr, int len);
 
-void readFrom(const char *inputFilename, double *waveTable, const int nSamples, const int maxLineLength);
+void readFrom(const char *inputFilename, double *table, const int nSamples, const int maxLineLength);
 
 #endif //WAVETABLES_WAVETABLES_H
