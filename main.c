@@ -149,10 +149,10 @@ int main(int argc, char *argv[]) {
     free(waveTable);
     free(spectralTable);
 
-    if (filePrint & 8) writeCartesianToTextFiles(cartesianTable, nSamples, filenameReal, filenameImag);
-    if (filePrint & 4) writePolarToTextFiles(polarTable, nSamples, filenameMagn, filenameAngl);
-    if (filePrint & 2) writeToTextFile(waveTableIdftCar, nSamples, filenameIdftCar);
-    if (filePrint & 1) writeToTextFile(waveTableIdftPol, nSamples, filenameIdftPol);
+    if (filePrint & 0x8) writeCartesianToTextFiles(cartesianTable, nSamples, filenameReal, filenameImag);
+    if (filePrint & 0x4) writePolarToTextFiles(polarTable, nSamples, filenameMagn, filenameAngl);
+    if (filePrint & 0x2) writeToTextFile(waveTableIdftCar, nSamples, filenameIdftCar);
+    if (filePrint & 0x1) writeToTextFile(waveTableIdftPol, nSamples, filenameIdftPol);
 
     free(cartesianTable);
     free(polarTable);
